@@ -1,38 +1,58 @@
 <head>
-        <style> body { margin: 0; } </style>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://unpkg.com/3d-force-graph"></script>
-    <!-- <script src="node_modules/3d-force-graph/dist/3d-force-graph.js"></script> -->
 </head>
 
 <body>
     <div id="idea-web"></div>
-    <button style="position: fixed; bottom: 10px; right: 10px;" onclick="onClick()">Add Idea</button>
+    <button id="btn-add" onclick="onAddItemClick()">Add Idea</button>
+    <div id="modal-idea">
+            Idea Name:<br>
+            <input id="idea-name" type="text" name="name">
+            <br>
+            Tag:<br>
+            <input type="text" name="tag">
+            <br><br>
+            <button id="idea-tag" type="submit" onclick="onModalSubmitClick()">Done</button>
+    </div>
     <script>
 
-        const elem = document.getElementById('idea-web');
-        const ideas = {
-            nodes: [{id: 1, val: 10}, {id: 2, val: 1}],
-            links: [{source: 1, target: 2}]
-        }
+        const web = document.getElementById('idea-web');
+        const data = {
+            nodes: [{id: 0, val: 10, name: "one"}, {id: 1, val: 1, name: "two"}],
+            links: [{source: 0, target: 1}]
+        };
+        const ideas = [];
 
         const Graph = ForceGraph3D()
-            (elem)
-                .graphData(ideas)
-                .nodeLabel('id')
-                .onNodeHover(node => elem.style.cursor = node ? 'pointer': null);
+            (web)
+                .graphData(data)
+                .nodeLabel('name')
+                .onNodeHover(node => web.style.cursor = node ? 'pointer': null);
 
-        function onClick() {
-            const { nodes, links } = Graph.graphData();
-            const id = nodes.length
-            Graph.graphData({
-                    nodes: [...nodes, { id }],
-                    links: [...links, {source: id, target: Math.round(Math.random() * (id-1))}]
-                })
+        function onAddItemClick() {
+            const modal = document.getElementById("modal-idea");
+            modal.style.display = "block";    
         }
 
-        
-        
+        function onModalSubmitClick() {
+            const modal = document.getElementById("modal-idea");
+            const ideaName = document.getElementById("idea-name");
+            const ideaTag = document.getElementById("idea-tag");
 
-        
+            ideas.push({
+                name: ideaName.value,
+                tags: [ideaTag.value]
+            });
+
+            modal.style.display = "none";
+
+            const { nodes, links } = Graph.graphData();
+            const id = nodes.length;
+            Graph.graphData({
+                    nodes: [...nodes, {id, name: ideaName.value}],
+                    links: [...links, {source: id, target: Math.round(Math.random() * (id-1))}]
+                });
+        } 
     </script>
 </body>
