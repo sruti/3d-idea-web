@@ -10,7 +10,7 @@
             Idea Name:<br>
             <input id="idea-name" type="text" name="name">
             <br>
-            Tag:<br>
+            Tags (comma separated):<br>
             <input id="idea-tag" type="text" name="tag">
             <br><br>
             <button type="submit" onclick="onModalSubmitClick()">Done</button>
@@ -37,7 +37,7 @@
         function onModalSubmitClick() {
             const modal = document.getElementById("modal-idea");
             const ideaName = document.getElementById("idea-name");
-            const ideaTag = document.getElementById("idea-tag");
+            const idTagList = document.getElementById("idea-tag");
 
             const { nodes, links } = Graph.graphData();
             const id = nodes.length;
@@ -45,10 +45,13 @@
             const newIdea = {
                 id: id,
                 name: ideaName.value,
-                tags: [ideaTag.value] 
+                tags: new Set(idTagList.value.split(",").map(tag => tag.trim().toLowerCase())) 
             };
 
             modal.style.display = "none";
+            ideaName.value = '';
+            idTagList.value = '';
+
             var newLinks = [];
 
             for(newTag of newIdea.tags) {
