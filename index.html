@@ -71,15 +71,14 @@
 
             var newLinks = [];
 
-            for(newTag of newIdea.tags) {
-                for(idea of nodes) {
-                    for (tag of idea.tags) {
-                        if (tag == newTag) {
-                            newLinks = [...newLinks, {source: newIdea.id, target: idea.id}]
-                        }
-                    }
-                }   
-            }
+            
+            for(idea of nodes) {
+                var intersection = new Set([...idea.tags].filter(x => newIdea.tags.has(x)));
+                if (intersection.size != 0) {
+                    newLinks = [...newLinks, {source: newIdea.id, target: idea.id}]
+                }
+            }   
+    
             Graph.graphData({
                     nodes: [...nodes, {...newIdea}],
                     links: [...links, ...newLinks]
