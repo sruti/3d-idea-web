@@ -11,18 +11,17 @@
             <input id="idea-name" type="text" name="name">
             <br>
             Tag:<br>
-            <input type="text" name="tag">
+            <input id="idea-tag" type="text" name="tag">
             <br><br>
-            <button id="idea-tag" type="submit" onclick="onModalSubmitClick()">Done</button>
+            <button type="submit" onclick="onModalSubmitClick()">Done</button>
     </div>
     <script>
 
         const web = document.getElementById('idea-web');
         const data = {
-            nodes: [{id: 0, val: 10, name: "one"}, {id: 1, val: 1, name: "two"}],
+            nodes: [{id: 0, val: 10, name: "one", tags: ["c"]}, {id: 1, val: 1, name: "two", tags: ["ab", "rc"]}],
             links: [{source: 0, target: 1}]
         };
-        const ideas = [];
 
         const Graph = ForceGraph3D()
             (web)
@@ -40,19 +39,33 @@
             const ideaName = document.getElementById("idea-name");
             const ideaTag = document.getElementById("idea-tag");
 
-            ideas.push({
-                name: ideaName.value,
-                tags: [ideaTag.value]
-            });
-
-            modal.style.display = "none";
-
             const { nodes, links } = Graph.graphData();
             const id = nodes.length;
+
+            const newIdea = {
+                id: id,
+                name: ideaName.value,
+                tags: [ideaTag.value] 
+            };
+
+            modal.style.display = "none";
+            var newLinks = [];
+
+            for(newTag of newIdea.tags) {
+                for(idea of nodes) {
+                    for (tag of idea.tags) {
+                        if (tag == newTag) {
+                            newLinks = [...newLinks, {source: newIdea.id, target: idea.id}]
+                        }
+                    }
+                }   
+            }
             Graph.graphData({
-                    nodes: [...nodes, {id, name: ideaName.value}],
-                    links: [...links, {source: id, target: Math.round(Math.random() * (id-1))}]
+                    nodes: [...nodes, {...newIdea}],
+                    links: [...links, ...newLinks]
+
                 });
         } 
+
     </script>
 </body>
