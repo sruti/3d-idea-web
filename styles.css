@@ -16,3 +16,10 @@ body {
     background-color: darkgreen;
     padding: 15px;
 }
+
+#modal-detail {
+    display: none;
+    position: absolute;
+    background-color: aliceblue;
+    padding: 15px;
+}

@@ -10,13 +10,18 @@
             Idea Name:<br>
             <input id="idea-name" type="text" name="name">
             <br>
-            Tags (comma separated):<br>
+            Topics (comma separated):<br>
             <input id="idea-tag" type="text" name="tag">
             <br><br>
             <button type="submit" onclick="onModalSubmitClick()">Done</button>
     </div>
-    <script>
+    
+    <div id="modal-detail">
+        <b><span id="detail-name"></span></b><br><br>
+        Topics: <span id="detail-tags"></span>
+    </div>
 
+    <script>
         const web = document.getElementById('idea-web');
         const data = {
             nodes: [{id: 0, val: 10, name: "one", tags: ["c"]}, {id: 1, val: 1, name: "two", tags: ["ab", "rc"]}],
@@ -27,7 +32,11 @@
             (web)
                 .graphData(data)
                 .nodeLabel('name')
-                .onNodeHover(node => web.style.cursor = node ? 'pointer': null);
+                .onNodeHover(node => web.style.cursor = node ? 'pointer': null)
+                .onNodeClick(node => {
+                    detailDisplay(node);
+                });
+
 
         function onAddItemClick() {
             const modal = document.getElementById("modal-idea");
@@ -69,6 +78,26 @@
 
                 });
         } 
+
+        function detailDisplay(node) {
+            const modal = document.getElementById("modal-detail");
+            const detailName = document.getElementById("detail-name");
+            const detailTags = document.getElementById("detail-tags");
+
+            detailName.textContent = node.name;
+            detailTags.textContent = node.tags.toString();
+
+            modal.style.top = event.pageY;
+            modal.style.left = event.pageX;
+            modal.style.display = 'block';
+
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("modal-detail")) {
+                document.getElementById("modal-detail").style.display = "none";
+        }
+}
 
     </script>
 </body>
