@@ -7,15 +7,15 @@
     <div id="idea-web"></div>
     <button id="btn-add" onclick="onAddItemClick()">Add Idea</button>
     <div id="modal-idea">
-            Idea Name:<br>
-            <input id="idea-name" type="text" name="name">
-            <br>
-            Topics (comma separated):<br>
-            <input id="idea-tag" type="text" name="tag">
-            <br><br>
-            <button type="submit" onclick="onModalSubmitClick()">Done</button>
+        Idea Name:<br>
+        <input id="idea-name" type="text" name="name">
+        <br>
+        Topics (comma separated):<br>
+        <input id="idea-tag" type="text" name="tag">
+        <br><br>
+        <button type="submit" onclick="onModalSubmitClick()">Done</button>
     </div>
-    
+
     <div id="modal-detail">
         <b><span id="detail-name"></span></b><br><br>
         Topics: <span id="detail-tags"></span>
@@ -24,33 +24,32 @@
     <script>
         const web = document.getElementById('idea-web');
         const data = {
-            nodes: [{id: 0, val: 10, name: "one", tags: new Set(["c"])}, {id: 1, val: 1, name: "two", tags: new Set(["ab", "rc"])}],
-            links: [{source: 0, target: 1}]
+            nodes: [{ id: 0, val: 10, name: "one", tags: new Set(["c"]) }, { id: 1, val: 1, name: "two", tags: new Set(["ab", "rc"]) }],
+            links: [{ source: 0, target: 1 }]
         };
 
         const Graph = ForceGraph3D()
             (web)
-                .graphData(data)
-                .nodeLabel('name')
-                .onNodeHover(node => web.style.cursor = node ? 'pointer': null)
-                .onNodeClick(node => {
-                    // Aim at node from outside it
-                    const distance = 40;
-                    const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
+            .graphData(data)
+            .nodeLabel('name')
+            .onNodeHover(node => web.style.cursor = node ? 'pointer' : null)
+            .onNodeClick(node => {
+                // Aim at node from outside it
+                const distance = 40;
+                const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
 
-                    Graph.cameraPosition(
-                        { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
-                        node, // lookAt ({ x, y, z })
-                        3000  // ms transition duration
-                    );
-
-                    detailDisplay(node);
-                });
+                Graph.cameraPosition(
+                    { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+                    node, // lookAt ({ x, y, z })
+                    3000  // ms transition duration
+                );
+                detailDisplay(node);
+            });
 
 
         function onAddItemClick() {
             const modal = document.getElementById("modal-idea");
-            modal.style.display = "block";    
+            modal.style.display = "block";
         }
 
         function onModalSubmitClick() {
@@ -64,7 +63,7 @@
             const newIdea = {
                 id: id,
                 name: ideaName.value,
-                tags: new Set(idTagList.value.split(",").map(tag => tag.trim().toLowerCase())) 
+                tags: new Set(idTagList.value.split(",").map(tag => tag.trim().toLowerCase()))
             };
 
             modal.style.display = "none";
@@ -73,20 +72,18 @@
 
             var newLinks = [];
 
-            
-            for(idea of nodes) {
+            for (idea of nodes) {
                 var intersection = new Set([...idea.tags].filter(x => newIdea.tags.has(x)));
                 if (intersection.size != 0) {
-                    newLinks = [...newLinks, {source: newIdea.id, target: idea.id}]
+                    newLinks = [...newLinks, { source: newIdea.id, target: idea.id }]
                 }
-            }   
-    
-            Graph.graphData({
-                    nodes: [...nodes, {...newIdea}],
-                    links: [...links, ...newLinks]
+            }
 
-                });
-        } 
+            Graph.graphData({
+                nodes: [...nodes, { ...newIdea }],
+                links: [...links, ...newLinks]
+            });
+        }
 
         function detailDisplay(node) {
             const modal = document.getElementById("modal-detail");
@@ -99,14 +96,13 @@
             modal.style.top = event.pageY;
             modal.style.left = event.pageX;
             modal.style.display = 'block';
-
         }
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target == document.getElementById("modal-detail")) {
                 document.getElementById("modal-detail").style.display = "none";
+            }
         }
-}
 
     </script>
 </body>
