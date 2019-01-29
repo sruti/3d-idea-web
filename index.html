@@ -24,7 +24,7 @@
     <script>
         const web = document.getElementById('idea-web');
         const data = {
-            nodes: [{id: 0, val: 10, name: "one", tags: ["c"]}, {id: 1, val: 1, name: "two", tags: ["ab", "rc"]}],
+            nodes: [{id: 0, val: 10, name: "one", tags: new Set(["c"])}, {id: 1, val: 1, name: "two", tags: new Set(["ab", "rc"])}],
             links: [{source: 0, target: 1}]
         };
 
@@ -43,6 +43,8 @@
                         node, // lookAt ({ x, y, z })
                         3000  // ms transition duration
                     );
+
+                    detailDisplay(node);
                 });
 
 
@@ -92,7 +94,7 @@
             const detailTags = document.getElementById("detail-tags");
 
             detailName.textContent = node.name;
-            detailTags.textContent = node.tags.toString();
+            detailTags.textContent = [...node.tags].join(', ');
 
             modal.style.top = event.pageY;
             modal.style.left = event.pageX;
