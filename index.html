@@ -10,22 +10,24 @@
         <form id="form-idea-new" onsubmit="onModalSubmitClick(event, this)">
             Idea Name:<br>
             <input type="text" name="idea-name">
-            <br>
+            <br><br>
             Description:<br>
-            <input type="text" name="description">
-            <br>
+            <textarea type="text" name="description"></textarea>
+            <br><br>
             Topics (comma separated):<br>
             <input type="text" name="tags">
-            <br>
-            Your Name (optional):<br>
+            <br><br>
+            Your Name:<br>
             <input type="text" name="creator-name">
             <br><br>
             <input type="submit">
         </form>
     </div>
 
-    <div id="modal-detail">
-        <b><span id="detail-name"></span></b><br><br>
+    <div id="modal-idea-detail">
+        <b><span id="detail-name"></span></b><br>
+        <span id="detail-creator"></span><br><br>
+        <span id="detail-description"></span><br><br>
         Topics: <span id="detail-tags"></span>
     </div>
 
@@ -113,12 +115,16 @@
         }
 
         function detailDisplay(node) {
-            const modal = document.getElementById("modal-detail");
+            const modal = document.getElementById("modal-idea-detail");
             const detailName = document.getElementById("detail-name");
             const detailTags = document.getElementById("detail-tags");
+            const detailCreator = document.getElementById("detail-creator");
+            const detailDescription = document.getElementById("detail-description");
 
             detailName.textContent = node.name;
             detailTags.textContent = [...node.tags].join(', ');
+            detailCreator.textContent = node.creator;
+            detailDescription.textContent = node.description;
 
             modal.style.top = event.pageY;
             modal.style.left = event.pageX;
@@ -126,8 +132,8 @@
         }
 
         window.onclick = function (event) {
-            if (event.target == document.getElementById("modal-detail")) {
-                document.getElementById("modal-detail").style.display = "none";
+            if (event.target == document.getElementById("modal-idea-detail")) {
+                document.getElementById("modal-idea-detail").style.display = "none";
             }
         }
 

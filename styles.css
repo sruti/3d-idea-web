@@ -1,5 +1,6 @@
 body { 
     margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 #btn-add {
@@ -17,9 +18,14 @@ body {
     padding: 15px;
 }
 
-#modal-detail {
+#modal-idea-detail {
     display: none;
     position: absolute;
     background-color: aliceblue;
     padding: 15px;
+    width: 300px;
+}
+
+textarea {
+    height: 75px;
 }
