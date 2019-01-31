@@ -29,3 +29,9 @@ body {
 textarea {
     height: 75px;
 }
+
+.exit-button {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+}

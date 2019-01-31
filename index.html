@@ -7,6 +7,7 @@
     <div id="idea-web"></div>
     <button id="btn-add" onclick="onAddItemClick()">Add Idea</button>
     <div id="modal-idea-new">
+        <button class="exit-button" onclick="onModalCloseClick(this)">X</button>
         <form id="form-idea-new" onsubmit="onModalSubmitClick(event, this)">
             Idea Name:<br>
             <input type="text" name="idea-name">
@@ -25,6 +26,7 @@
     </div>
 
     <div id="modal-idea-detail">
+        <button class="exit-button" onclick="onModalCloseClick(this)">X</button>
         <b><span id="detail-name"></span></b><br>
         <span id="detail-creator"></span><br><br>
         <span id="detail-description"></span><br><br>
@@ -129,6 +131,10 @@
             modal.style.top = event.pageY;
             modal.style.left = event.pageX;
             modal.style.display = 'block';
+        }
+
+        function onModalCloseClick(modal) {
+            modal.parentElement.style.display = 'none';
         }
 
         window.onclick = function (event) {
