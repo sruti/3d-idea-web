@@ -6,14 +6,22 @@
 <body>
     <div id="idea-web"></div>
     <button id="btn-add" onclick="onAddItemClick()">Add Idea</button>
-    <div id="modal-idea">
-        Idea Name:<br>
-        <input id="idea-name" type="text" name="name">
-        <br>
-        Topics (comma separated):<br>
-        <input id="idea-tag" type="text" name="tag">
-        <br><br>
-        <button type="submit" onclick="onModalSubmitClick()">Done</button>
+    <div id="modal-idea-new">
+        <form id="form-idea-new" onsubmit="onModalSubmitClick(event, this)">
+            Idea Name:<br>
+            <input type="text" name="idea-name">
+            <br>
+            Description:<br>
+            <input type="text" name="description">
+            <br>
+            Topics (comma separated):<br>
+            <input type="text" name="tags">
+            <br>
+            Your Name (optional):<br>
+            <input type="text" name="creator-name">
+            <br><br>
+            <input type="submit">
+        </form>
     </div>
 
     <div id="modal-detail">
@@ -24,8 +32,24 @@
     <script>
         const web = document.getElementById('idea-web');
         const data = {
-            nodes: [{ id: 0, val: 10, name: "one", tags: new Set(["c"]) }, { id: 1, val: 1, name: "two", tags: new Set(["ab", "rc"]) }],
-            links: [{ source: 0, target: 1 }]
+            nodes: [
+                {
+                    id: 0, val: 1, name: "Dance Visualizer", tags: new Set(["computer vision", "dance"]),
+                    description: "Take old dance videos as input and track movements to create visualizations", creator: "Sruti"
+                },
+                {
+                    id: 1, val: 1, name: "Route Optimizer", tags: new Set(["routing", "constraint optimization"]),
+                    description: "Find optimal route for multiple locations and time constraints", creator: "Sruti"
+                },
+                {
+                    id: 2, val: 1, name: "Dance Moves Database", tags: new Set(["computer vision", "dance", "machine learning"]),
+                    description: "Analyze dance moves from different styles to learn and understand history", creator: "Marko"
+                },
+                {
+                    id: 3, val: 1, name: "Meet in the Middle", tags: new Set(["routing", "constraint optimization", "machine learning"]),
+                    description: "Find a convenient meeting point for two people in different locations", creator: "Dan"
+                }],
+            links: [{ source: 0, target: 2 }, { source: 1, target: 3 }, { source: 2, target: 3 }]
         };
 
         const Graph = ForceGraph3D()
@@ -46,16 +70,18 @@
                 detailDisplay(node);
             });
 
-
         function onAddItemClick() {
-            const modal = document.getElementById("modal-idea");
+            const modal = document.getElementById("modal-idea-new");
             modal.style.display = "block";
         }
 
-        function onModalSubmitClick() {
-            const modal = document.getElementById("modal-idea");
-            const ideaName = document.getElementById("idea-name");
-            const idTagList = document.getElementById("idea-tag");
+        function onModalSubmitClick(event, form) {
+            event.preventDefault();
+            const modal = document.getElementById("modal-idea-new");
+            const ideaName = form["idea-name"];
+            const ideaTags = form["tags"];
+            const ideaDescription = form["description"];
+            const creatorName = form["creator-name"];
 
             const { nodes, links } = Graph.graphData();
             const id = nodes.length;
@@ -63,12 +89,13 @@
             const newIdea = {
                 id: id,
                 name: ideaName.value,
-                tags: new Set(idTagList.value.split(",").map(tag => tag.trim().toLowerCase()))
+                tags: new Set(ideaTags.value.split(",").map(tag => tag.trim().toLowerCase())),
+                creator: creatorName.value,
+                description: ideaDescription.value,
             };
 
             modal.style.display = "none";
-            ideaName.value = '';
-            idTagList.value = '';
+            form.reset();
 
             var newLinks = [];
 
