@@ -1,0 +1,49 @@
+service: backend-aws
+
+provider:
+  name: aws
+  runtime: python3.7
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - { "Fn::GetAtt": ["dataTable", "Arn" ] }
+
+functions:
+  get_data:
+    handler: handler.get_data
+    events:
+      - http:
+          path: data
+          method: get
+  store_data:
+    handler: handler.store_data
+    events:
+      - http:
+          path: data
+          method: post
+
+resources:
+ Resources:
+   dataTable:
+     Type: AWS::DynamoDB::Table
+     Properties:
+        TableName: data-table
+        AttributeDefinitions:
+          - 
+            AttributeName: dataId
+            AttributeType: S
+        KeySchema:
+          - 
+            AttributeName: dataId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
