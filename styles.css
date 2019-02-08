@@ -3,7 +3,7 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#btn-add {
+#button-add {
     position: fixed;
     bottom: 10px;
     right: 10px;
@@ -30,7 +30,7 @@ textarea {
     height: 75px;
 }
 
-.exit-button {
+.button-modal-close {
     position: absolute;
     right: 5px;
     top: 5px;
