@@ -34,45 +34,45 @@
     </div>
 
     <script>
-        const web = document.getElementById('idea-web');
-        const data = {
-            nodes: [
-                {
-                    id: 0, val: 1, name: "Dance Visualizer", tags: new Set(["computer vision", "dance"]),
-                    description: "Take old dance videos as input and track movements to create visualizations", creator: "Sruti"
-                },
-                {
-                    id: 1, val: 1, name: "Route Optimizer", tags: new Set(["routing", "constraint optimization"]),
-                    description: "Find optimal route for multiple locations and time constraints", creator: "Sruti"
-                },
-                {
-                    id: 2, val: 1, name: "Dance Moves Database", tags: new Set(["computer vision", "dance", "machine learning"]),
-                    description: "Analyze dance moves from different styles to learn and understand history", creator: "Marko"
-                },
-                {
-                    id: 3, val: 1, name: "Meet in the Middle", tags: new Set(["routing", "constraint optimization", "machine learning"]),
-                    description: "Find a convenient meeting point for two people in different locations", creator: "Dan"
-                }],
-            links: [{ source: 0, target: 2 }, { source: 1, target: 3 }, { source: 2, target: 3 }]
-        };
+        displayGraph();
 
-        const Graph = ForceGraph3D()
-            (web)
-            .graphData(data)
-            .nodeLabel('name')
-            .onNodeHover(node => web.style.cursor = node ? 'pointer' : null)
-            .onNodeClick(node => {
-                // Aim at node from outside it
-                const distance = 40;
-                const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+        async function displayGraph() {
+            const web = document.getElementById('idea-web');
+            let newData
+            try {
+                newData = await getData()
+                const Graph = ForceGraph3D()
+                    (web)
+                    .graphData(newData)
+                    .nodeLabel('name')
+                    .onNodeHover(node => web.style.cursor = node ? 'pointer' : null)
+                    .onNodeClick(node => {
+                        // Aim at node from outside it
+                        const distance = 40;
+                        const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
 
-                Graph.cameraPosition(
-                    { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
-                    node, // lookAt ({ x, y, z })
-                    3000  // ms transition duration
-                );
-                detailDisplay(node);
-            });
+                        Graph.cameraPosition(
+                            { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+                            node, // lookAt ({ x, y, z })
+                            3000  // ms transition duration
+                        );
+                        detailDisplay(node);
+                    });
+            }
+            catch (error) {
+                console.log(error)
+            }
+        }
+
+        function getData() {
+            return fetch('https://syar2tbuna.execute-api.us-east-1.amazonaws.com/dev/data')
+                .then(response => {
+                    if (response.ok) {
+                        return response.json()
+                    } throw new Error(response.statusText)
+                })
+                .catch(error => { throw new Error(error.message) });
+        }
 
         function onAddItemClick() {
             const modal = document.getElementById("modal-idea-new");

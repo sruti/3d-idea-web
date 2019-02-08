@@ -7,6 +7,11 @@ table = dynamodb.Table('data-table')
 def format_response(status_code, body):
     response = {
         "statusCode": status_code,
+        "headers": {
+                "Access-Control-Allow-Credentials": True,
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+            },
         "body": json.dumps(body)
     }
     return response
