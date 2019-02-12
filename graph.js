@@ -1,4 +1,4 @@
-const graphElem = document.getElementById('idea-graph');
+const graphElem = document.getElementById("idea-graph");
 const Graph = ForceGraph3D()(graphElem)
 displayGraph();
 
@@ -11,10 +11,11 @@ window.onclick = function (event) {
 async function displayGraph() {
     let newData
     try {
-        newData = await getData()
+        newData = await getData();
+        newData.nodes = newData.nodes.map(node => ({...node, tags: new Set(node.tags)}));
         Graph.graphData(newData)
-            .nodeLabel('name')
-            .onNodeHover(node => graphElem.style.cursor = node ? 'pointer' : null)
+            .nodeLabel("name")
+            .onNodeHover(node => graphElem.style.cursor = node ? "pointer" : null)
             .onNodeClick(node => {
                 // Aim at node from outside it
                 const distance = 40;
@@ -44,10 +45,10 @@ function displayDetail(node) {
     detailTags.textContent = [...node.tags].join(', ');
     detailCreator.textContent = node.creator;
     detailDescription.textContent = node.description;
-
-    modal.style.top = event.pageY;
-    modal.style.left = event.pageX;
-    modal.style.display = 'block';
+    
+    modal.style.top = event.pageY + "px";
+    modal.style.left = event.pageX + "px";
+    modal.style.display = "block";  
 }
 
 function onAddItemClick() {
@@ -86,7 +87,7 @@ function onModalSubmitClick(event, form) {
 }
 
 function onModalCloseClick(modal) {
-    modal.parentElement.style.display = 'none';
+    modal.parentElement.style.display = "none";
 }
 
 function matchTags(newIdea, nodes) {
@@ -97,4 +98,5 @@ function matchTags(newIdea, nodes) {
             newLinks = [...newLinks, { source: newIdea.id, target: idea.id }]
         }
     }
+    return newLinks
 }
