@@ -10,13 +10,13 @@
         <button class="button-modal-close" onclick="onModalCloseClick(this)">X</button>
         <form id="form-idea-new" onsubmit="onModalSubmitClick(event, this)">
             Idea Name:<br>
-            <input type="text" name="idea-name">
+            <input type="text" name="idea-name" required>
             <br><br>
-            Description:<br>
+            Short Description:<br>
             <textarea type="text" name="description"></textarea>
             <br><br>
             Topics (comma separated):<br>
-            <input type="text" name="tags">
+            <input type="text" name="tags" required>
             <br><br>
             Your Name:<br>
             <input type="text" name="creator-name">
@@ -36,4 +36,3 @@
     <script src="api.js"></script>
     <script src="graph.js"></script>
 </body>
-

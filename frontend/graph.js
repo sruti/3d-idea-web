@@ -14,6 +14,7 @@ async function displayGraph() {
         dataState = await getData();
         Graph.graphData(JSON.parse(JSON.stringify(dataState)))
             .nodeLabel("name")
+            .linkWidth(0.5)
             .onNodeHover(node => graphElem.style.cursor = node ? "pointer" : null)
             .onNodeClick(node => {
                 // Aim at node from outside it
@@ -60,20 +61,20 @@ function onModalSubmitClick(event, form) {
     const modal = document.getElementById("modal-idea-new");
     modal.style.display = "none";
 
-    const ideaName = form["idea-name"];
-    const ideaTags = form["tags"];
-    const ideaDescription = form["description"];
-    const creatorName = form["creator-name"];
+    const ideaName = form["idea-name"].value;
+    const ideaTags = form["tags"].value;
+    const ideaDescription = form["description"].value ? form["description"].value : " ";
+    const creatorName = form["creator-name"].value ? form["creator-name"].value : " ";
 
     const id = dataState.nodes.length;
-    const newTags = new Set(ideaTags.value.split(",").map(tag => tag.trim().toLowerCase()));
+    const newTags = new Set(ideaTags.split(",").map(tag => tag.trim().toLowerCase()));
 
     const newIdea = {
         id: id.toString(),
-        name: ideaName.value,
+        name: ideaName,
         tags: Array.from(newTags),
-        creator: creatorName.value,
-        description: ideaDescription.value,
+        creator: creatorName,
+        description: ideaDescription,
     };
     const newLinks = matchTags(newIdea, dataState.nodes)
 
