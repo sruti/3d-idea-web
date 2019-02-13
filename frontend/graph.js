@@ -1,5 +1,6 @@
 const graphElem = document.getElementById("idea-graph");
 const Graph = ForceGraph3D()(graphElem)
+var dataState = {}
 displayGraph();
 
 window.onclick = function (event) {
@@ -9,11 +10,9 @@ window.onclick = function (event) {
 }
 
 async function displayGraph() {
-    let newData
     try {
-        newData = await getData();
-        newData.nodes = newData.nodes.map(node => ({...node, tags: new Set(node.tags)}));
-        Graph.graphData(newData)
+        dataState = await getData();
+        Graph.graphData(JSON.parse(JSON.stringify(dataState)))
             .nodeLabel("name")
             .onNodeHover(node => graphElem.style.cursor = node ? "pointer" : null)
             .onNodeClick(node => {
@@ -30,7 +29,7 @@ async function displayGraph() {
             });
     }
     catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
 
@@ -42,7 +41,7 @@ function displayDetail(node) {
     const detailDescription = document.getElementById("detail-description");
 
     detailName.textContent = node.name;
-    detailTags.textContent = [...node.tags].join(', ');
+    detailTags.textContent = node.tags.filter(Boolean).toString();
     detailCreator.textContent = node.creator;
     detailDescription.textContent = node.description;
     
@@ -66,24 +65,30 @@ function onModalSubmitClick(event, form) {
     const ideaDescription = form["description"];
     const creatorName = form["creator-name"];
 
-    const { nodes, links } = Graph.graphData();
-    const id = nodes.length;
+    const id = dataState.nodes.length;
+    const newTags = new Set(ideaTags.value.split(",").map(tag => tag.trim().toLowerCase()));
 
     const newIdea = {
-        id: id,
+        id: id.toString(),
         name: ideaName.value,
-        tags: new Set(ideaTags.value.split(",").map(tag => tag.trim().toLowerCase())),
+        tags: Array.from(newTags),
         creator: creatorName.value,
         description: ideaDescription.value,
     };
-    const newLinks = matchTags(newIdea, nodes)
+    const newLinks = matchTags(newIdea, dataState.nodes)
 
-    Graph.graphData({
-        nodes: [...nodes, { ...newIdea }],
-        links: [...links, ...newLinks]
-    });
+    dataState.nodes = [...dataState.nodes, {...newIdea}]
+    dataState.links = [...dataState.links, ...newLinks]
 
+    Graph.graphData(JSON.parse(JSON.stringify(dataState)))
     form.reset();
+    
+    try {
+        storeData(dataState);
+    }
+    catch (error) {
+        console.log(error);
+    }
 }
 
 function onModalCloseClick(modal) {
@@ -93,8 +98,8 @@ function onModalCloseClick(modal) {
 function matchTags(newIdea, nodes) {
     var newLinks = [];
     for (idea of nodes) {
-        var intersection = new Set([...idea.tags].filter(x => newIdea.tags.has(x)));
-        if (intersection.size != 0) {
+        var intersection = idea.tags.filter(x => newIdea.tags.includes(x));
+        if (intersection.length != 0) {
             newLinks = [...newLinks, { source: newIdea.id, target: idea.id }]
         }
     }
