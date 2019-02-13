@@ -18,14 +18,11 @@ def format_response(status_code, body):
 
 def get_data(event, context):   
     response = table.get_item(Key={"dataId": "1"})
-    print(response)
     data = response.get("Item")
-    print(data)
     return format_response(200, data)
 
 def store_data(event, context):
-    print(event)  
     item = json.loads(event.get('body'))
-    item["dataId"] = "2"
+    item["dataId"] = "1"
     response = table.put_item(Item=item)
     return format_response(200, "Stored the data")
